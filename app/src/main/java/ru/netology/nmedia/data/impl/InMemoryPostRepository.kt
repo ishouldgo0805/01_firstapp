@@ -17,13 +17,12 @@ class InMemoryPostRepository : PostRepository {
         )
     )
 
-    override fun likes(): Int {
+    override fun likes() {
         val currentPost = checkNotNull(data.value) {
             "Data should be not null"
         }
         val likedPost = currentPost.copy(likedByMe = !currentPost.likedByMe)
         data.value = likedPost
-        return if (data.value?.likedByMe == true) R.drawable.ic_baseline_favorite_224 else R.drawable.ic_baseline_favorite_24
     }
 
     private fun checkForK(a: Int): String {

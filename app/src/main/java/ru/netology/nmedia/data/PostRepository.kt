@@ -7,7 +7,7 @@ interface PostRepository {
 
     val data: LiveData<Post>
 
-    fun likes(): Int
+    fun likes()
 
     fun likeCounter(): String
 
