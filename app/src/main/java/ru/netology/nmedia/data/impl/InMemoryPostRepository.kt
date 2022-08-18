@@ -17,12 +17,14 @@ class InMemoryPostRepository : PostRepository {
         )
     )
 
-    override fun likes() {
+    override fun likes() : String {
         val currentPost = checkNotNull(data.value) {
             "Data should be not null"
         }
         val likedPost = currentPost.copy(likedByMe = !currentPost.likedByMe)
         data.value = likedPost
+        return if (likedPost.likedByMe) checkForK(++(likedPost.likes)) else checkForK(--(likedPost.likes))
+
     }
 
     private fun checkForK(a: Int): String {
@@ -35,9 +37,6 @@ class InMemoryPostRepository : PostRepository {
         }
         return a.toString()
     }
-
-    override fun likeCounter() =
-        if (data.value?.likedByMe == true) checkForK(++(data.value!!.likes)) else checkForK(--(data.value!!.likes))
 
     override fun shareCounter() = checkForK(++(data.value!!.shares))
 }
