@@ -8,7 +8,7 @@ import ru.netology.nmedia.data.PostRepository
 
 class InMemoryPostRepository : PostRepository {
 
-    override val data =(
+    override val data = MutableLiveData(
         Post(
             id = 0,
             author = "Dmitry",
@@ -17,14 +17,13 @@ class InMemoryPostRepository : PostRepository {
         )
     )
 
-    override fun likes(): Int {
-        data.likedByMe = !data.likedByMe
-         return if (data.likedByMe) R.drawable.ic_baseline_favorite_224 else R.drawable.ic_baseline_favorite_24
+    override fun likes() {
+        val currentPost = checkNotNull(data.value) {
+            "Data should be not null"
+        }
+        val likedPost = currentPost.copy(likedByMe = !currentPost.likedByMe)
+        data.value = likedPost
     }
-
-
-    override var likes: Int = 0
-    override var shares: Int = 0
 
     private fun checkForK(a: Int): String {
         if (a > 999_999) {
@@ -38,7 +37,7 @@ class InMemoryPostRepository : PostRepository {
     }
 
     override fun likeCounter() =
-        if (data.likedByMe) checkForK(++likes) else checkForK(--likes)
+        if (data.value?.likedByMe == true) checkForK(++(data.value!!.likes)) else checkForK(--(data.value!!.likes))
 
-    override fun shareCounter() = checkForK(++shares)
+    override fun shareCounter() = checkForK(++(data.value!!.shares))
 }
