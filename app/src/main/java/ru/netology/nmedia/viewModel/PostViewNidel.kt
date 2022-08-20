@@ -12,8 +12,6 @@ class PostViewModel: ViewModel() {
 
     fun onLikeClicked() = repository.likes()
 
-    fun likeCounter() = repository.likeCounter()
-
-    fun shareCounter() = repository.shareCounter()
+    fun onShareClicked() = repository.shareCounter()
 
 }

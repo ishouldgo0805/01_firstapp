@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="avatar" type="id" />
+    <item name="authorName" type="id" />
+    <item name="date" type="id" />
+    <item name="options" type="id" />
+    <item name="barrier2" type="id" />
+    <item name="barrier3" type="id" />
+    <item name="likes" type="id" />
+    <item name="likesCounter" type="id" />
+    <item name="share" type="id" />
+    <item name="shareCounter" type="id" />
+    <item name="views" type="id" />
+    <item name="viewsCounter" type="id" />
+</resources>

@@ -9,8 +9,8 @@ interface PostRepository {
 
     fun likes()
 
-    fun likeCounter(): String
+    fun shareCounter()
 
-    fun shareCounter(): String
+
 
 }
