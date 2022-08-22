@@ -14,21 +14,26 @@ class InMemoryPostRepository : PostRepository {
                 id = index + 1L,
                 author = "Dmitry",
                 content = "Events $index",
-                published = "06.08.2022"
+                published = "06.08.2022",
+                likedByMe = false
             )
         }
     )
 
-    private val posts = checkNotNull(data.value) {
-        "Data should be not null"
-    }
-
-    override fun likes(postId: Long){
-        data.value = posts.map {
-            if (it.id != postId) it
-            else it.copy(likedByMe = !it.likedByMe)
+    private var posts
+        get() = checkNotNull(data.value)
+        set(value) {
+            data.value = value
         }
-//        return if (data.value.filter { it.id == postId }) checkForK(++(likedPost.likes)) else checkForK(--(likedPost.likes))
+
+    override fun likes(postId: Long) {
+       posts = posts.map { post ->
+           if (post.id == postId) {
+               val a = post.copy(likedByMe = !post.likedByMe)
+               if (a.likedByMe) checkForK(++(a.likes)) else checkForK(--(a.likes))
+               a
+           } else post
+       }
     }
 
     private fun checkForK(a: Int): String {
@@ -42,5 +47,14 @@ class InMemoryPostRepository : PostRepository {
         return a.toString()
     }
 
-//    override fun shareCounter() = checkForK(++(data.value!!.shares))
+    override fun shareCounter(postId: Long) {
+        posts = posts.map { post ->
+            if (post.id == postId) {
+                val a = post.copy(shares = (checkForK(++(post.shares))).toInt())
+                a
+            } else post
+        }
+    }
+
+
 }

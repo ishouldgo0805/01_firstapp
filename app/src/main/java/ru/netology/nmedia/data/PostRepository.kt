@@ -9,6 +9,6 @@ interface PostRepository {
 
     fun likes(postId: Long)
 
-//    fun shareCounter(postId: Long): String
+    fun shareCounter(postId: Long)
 
 }
