@@ -35,17 +35,6 @@ class InMemoryPostRepository : PostRepository {
        }
     }
 
-    private fun checkForK(a: Int): String {
-        if (a > 999_999) {
-            return ((a / 100000)).toString() + "M"
-        } else if (a > 9999) {
-            return ((a / 1000)).toString() + "K"
-        } else if (a > 999) {
-            return "%.1f".format(((a.toFloat() / 1000))) + "K"
-        }
-        return a.toString()
-    }
-
     override fun shareCounter(postId: Long) {
         posts = posts.map { post ->
             if (post.id == postId) {

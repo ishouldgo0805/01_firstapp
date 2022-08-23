@@ -58,13 +58,24 @@ internal class PostsAdapter(
                 authorName.text = post.author
                 text.text = post.content
                 date.text = post.published
-                likesCounter.text = post.likes.toString()
-                shareCounter.text = post.shares.toString()
+                likesCounter.text = checkForK(post.likes)
+                shareCounter.text = checkForK(post.shares)
                 likes.setImageResource(
                     if (post.likedByMe) R.drawable.ic_baseline_favorite_224 else R.drawable.ic_baseline_favorite_24
                 )
             }
         }
+    }
+
+    private fun checkForK(a: Int): String {
+        if (a > 999_999) {
+            return ((a / 100000)).toString() + "M"
+        } else if (a > 9999) {
+            return ((a / 1000)).toString() + "K"
+        } else if (a > 999) {
+            return "%.1f".format(((a.toFloat() / 1000))) + "K"
+        }
+        return a.toString()
     }
 
     private object DiffCallback : DiffUtil.ItemCallback<Post>() {

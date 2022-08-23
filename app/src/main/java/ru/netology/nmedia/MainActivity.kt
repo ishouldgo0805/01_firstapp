@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         binding.postsRecyclerView.adapter = adapter
+
         viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
         }
