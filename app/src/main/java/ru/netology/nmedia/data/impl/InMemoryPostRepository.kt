@@ -29,8 +29,7 @@ class InMemoryPostRepository : PostRepository {
     override fun likes(postId: Long) {
        posts = posts.map { post ->
            if (post.id == postId) {
-               val a = post.copy(likedByMe = !post.likedByMe)
-               if (a.likedByMe) checkForK(++(a.likes)) else checkForK(--(a.likes))
+               val a = post.copy(likedByMe = !post.likedByMe, likes = if (!post.likedByMe) post.likes + 1 else post.likes - 1)
                a
            } else post
        }
@@ -50,7 +49,7 @@ class InMemoryPostRepository : PostRepository {
     override fun shareCounter(postId: Long) {
         posts = posts.map { post ->
             if (post.id == postId) {
-                val a = post.copy(shares = (checkForK(++(post.shares))).toInt())
+                val a = post.copy(shares = (post.shares + 1))
                 a
             } else post
         }
