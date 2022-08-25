@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
             adapter.submitList(posts)
         }
 
+
         binding.saveButton.setOnClickListener {
             with(binding.contentEditText) {
                 val content = text.toString()

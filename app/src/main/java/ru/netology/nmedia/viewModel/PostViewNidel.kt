@@ -19,7 +19,6 @@ class PostViewModel : ViewModel(), PostInteractionListener {
 
     val data by repository::data
 
-
     val currentPost = MutableLiveData<Post?>(null)
 
     fun onSaveButtonClicked(content: String) {
@@ -52,6 +51,5 @@ class PostViewModel : ViewModel(), PostInteractionListener {
     override fun onEditCLicked(post: Post) {
         currentPost.value = post
     }
-
 
 }

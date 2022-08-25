@@ -6,7 +6,7 @@ import ru.netology.nmedia.Post
 interface PostRepository {
 
     val data: LiveData<List<Post>>
-
+    
     fun likes(postId: Long)
 
     fun shareCounter(postId: Long)
@@ -18,5 +18,4 @@ interface PostRepository {
     companion object {
         const val NEW_POST_ID = 0L
     }
-
 }
