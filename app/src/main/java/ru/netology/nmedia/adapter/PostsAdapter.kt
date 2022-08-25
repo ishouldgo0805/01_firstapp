@@ -1,30 +1,26 @@
-package ru.netology.nmedia.data.impl
+package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.Post
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.MinipostBinding
+import ru.netology.nmedia.databinding.PostBinding
 
-
-typealias OnLikeListener = (Post) -> Unit
-
-typealias OnShareListener = (Post) -> Unit
 
 internal class PostsAdapter(
-    private val onLikeClicked: OnLikeListener,
-    private val onShareClicked: OnShareListener
+    private val interactionListener: PostInteractionListener
 ) : ListAdapter<Post, PostsAdapter.ViewHolder>(DiffCallback) {
-
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = MinipostBinding.inflate(inflater, parent, false)
-        return ViewHolder(binding, onLikeClicked, onShareClicked)
+        return ViewHolder(binding,interactionListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -34,19 +30,38 @@ internal class PostsAdapter(
 
     inner class ViewHolder(
         private val binding: MinipostBinding,
-        private val onLikeClicked: OnLikeListener,
-        private val onShareClicked: OnShareListener
+        listener: PostInteractionListener
     ) : RecyclerView.ViewHolder(binding.root) {
+
 
         private lateinit var post: Post
 
+        private val popupMenu by lazy {
+            PopupMenu(itemView.context, binding.options).apply {
+                inflate(R.menu.options_post)
+                setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.remove -> {
+                            listener.onRemoveClicked(post)
+                            true
+                        }
+                        R.id.edit -> {
+                            listener.onEditCLicked(post)
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            }
+        }
+
         init {
             binding.likes.setOnClickListener {
-                onLikeClicked(post)
+                listener.onLikeClicked(post)
 
             }
             binding.share.setOnClickListener {
-                onShareClicked(post)
+                listener.onShareClicked(post)
             }
         }
 
@@ -63,6 +78,7 @@ internal class PostsAdapter(
                 likes.setImageResource(
                     if (post.likedByMe) R.drawable.ic_baseline_favorite_224 else R.drawable.ic_baseline_favorite_24
                 )
+                options.setOnClickListener { popupMenu.show() }
             }
         }
     }
@@ -86,5 +102,4 @@ internal class PostsAdapter(
         override fun areContentsTheSame(oldItem: Post, newItem: Post) =
             oldItem == newItem
     }
-
 }
