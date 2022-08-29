@@ -56,13 +56,14 @@ internal class PostsAdapter(
         }
 
         init {
-            binding.likes.setOnClickListener {
+            binding.like.setOnClickListener {
                 listener.onLikeClicked(post)
 
             }
             binding.share.setOnClickListener {
                 listener.onShareClicked(post)
             }
+            binding.options.setOnClickListener { popupMenu.show() }
         }
 
 
@@ -73,12 +74,9 @@ internal class PostsAdapter(
                 authorName.text = post.author
                 text.text = post.content
                 date.text = post.published
-                likesCounter.text = checkForK(post.likes)
-                shareCounter.text = checkForK(post.shares)
-                likes.setImageResource(
-                    if (post.likedByMe) R.drawable.ic_baseline_favorite_224 else R.drawable.ic_baseline_favorite_24
-                )
-                options.setOnClickListener { popupMenu.show() }
+                like.text = checkForK(post.likes)
+                share.text = checkForK(post.shares)
+                like.isChecked = post.likedByMe
             }
         }
     }
