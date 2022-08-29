@@ -8,43 +8,72 @@ import ru.netology.nmedia.data.PostRepository
 
 class InMemoryPostRepository : PostRepository {
 
-    private var post = (
-        Post(
-            id = 0,
-            author = "Netology",
-            content = "Yo1",
-            published = "18.08.2022"
-        )
+    private var nextId = GENERATED_POSTS_AMOUNT.toLong()
+
+    override val data = MutableLiveData(
+        List(GENERATED_POSTS_AMOUNT) { index ->
+            Post(
+                id = index + 1L,
+                author = "Dmitry",
+                content = "Events $index",
+                published = "06.08.2022",
+                likedByMe = false,
+            )
+        }
     )
 
-    override val data = MutableLiveData(post)
 
-    private fun checkForK(a: Int): String {
-        if (a > 999_999) {
-            return ((a / 100000)).toString() + "M"
-        } else if (a > 9999) {
-            return ((a / 1000)).toString() + "K"
-        } else if (a > 999) {
-            return "%.1f".format(((a.toFloat() / 1000))) + "K"
+    private var posts
+        get() = checkNotNull(data.value)
+        set(value) {
+            data.value = value
         }
-        return a.toString()
+
+    override fun likes(postId: Long) {
+        posts = posts.map { post ->
+            if (post.id == postId) {
+                val a = post.copy(
+                    likedByMe = !post.likedByMe,
+                    likes = if (!post.likedByMe) post.likes + 1 else post.likes - 1
+                )
+                a
+            } else post
+        }
+        posts.map { }
     }
 
-    override fun shareCounter() {
-        val currentPost = checkNotNull(data.value) {
-            "Data should be not null"
+    override fun shareCounter(postId: Long) {
+        posts = posts.map { post ->
+            if (post.id == postId) {
+                val a = post.copy(shares = (post.shares + 1))
+                a
+            } else post
         }
-        val sharedPost = currentPost.copy(shares = (checkForK(++(data.value!!.shares))).toInt())
-        data.value = sharedPost
     }
 
-    override fun likes() {
-        val currentPost = checkNotNull(data.value) {
-            "Data should be not null"
+    override fun removeById(postId: Long) {
+        posts = posts.filter { post -> post.id != postId }
+    }
+
+    override fun save(post: Post) {
+        if (post.id == PostRepository.NEW_POST_ID) insert(post) else update(post)
+    }
+
+
+    private fun insert(post: Post) {
+        data.value = listOf(
+            post.copy(id = ++nextId)
+        ) + posts
+    }
+
+    private fun update(post: Post) {
+        data.value = posts.map {
+            if (it.id == post.id) post else it
         }
-        val likedPost = currentPost.copy(likedByMe = !currentPost.likedByMe)
-        if (likedPost.likedByMe) checkForK(++(likedPost.likes)) else checkForK(--(likedPost.likes))
-        data.value = likedPost
+    }
+
+    private companion object {
+        const val GENERATED_POSTS_AMOUNT = 1000
     }
 
 }
