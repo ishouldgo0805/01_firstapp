@@ -13,3 +13,4 @@
     <item name="views" type="id" />
     <item name="viewsCounter" type="id" />
     <item name="postsRecyclerView" type="id" />
+</resources>
