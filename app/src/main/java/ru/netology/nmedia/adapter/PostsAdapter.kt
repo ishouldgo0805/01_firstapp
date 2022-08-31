@@ -64,6 +64,10 @@ internal class PostsAdapter(
                 listener.onShareClicked(post)
             }
             binding.options.setOnClickListener { popupMenu.show() }
+
+            binding.video.setOnClickListener {
+                listener.onPlayVideoEvent(post)
+            }
         }
 
 

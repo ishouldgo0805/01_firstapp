@@ -64,8 +64,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/barrier2"
+        app:layout_constraintBottom_toTopOf="@id/video"
         tools:layout_editor_absoluteX="0dp"
         tools:text="@tools:sample/lorem/random" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text"
+        app:layout_constraintBottom_toTopOf="@id/barrier3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"
+        android:src="@drawable/ic_baseline_play_arrow_24"
+        android:background="@drawable/ic_launcher_foreground"
+        />
+
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier3"

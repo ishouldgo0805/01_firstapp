@@ -1,9 +1,12 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.activities
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.*
 import ru.netology.nmedia.util.hideKeyboard
@@ -28,6 +31,27 @@ class MainActivity : AppCompatActivity() {
             adapter.submitList(posts)
         }
 
+        viewModel.shareEvent.observe(this) { postContent ->
+            val intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, postContent)
+                type = "text/plain"
+            }
+            val shareIntent =
+                Intent.createChooser(intent, getString(R.string.chooser_share_post))
+            startActivity(shareIntent)
+        }
+
+        viewModel.videoPostEvent.observe(this) { postVideoContent ->
+            val intent = Intent().apply {
+                action = Intent.ACTION_VIEW
+                data = Uri.parse(postVideoContent)
+                putExtra(Intent.ACTION_VIEW, data)
+            }
+            val videoIntent =
+                Intent.createChooser(intent, getString(R.string.chooser_open_video))
+            startActivity(videoIntent)
+        }
 
         binding.saveButton.setOnClickListener {
             with(binding.contentEditText) {
@@ -35,6 +59,7 @@ class MainActivity : AppCompatActivity() {
                 viewModel.onSaveButtonClicked(content)
             }
         }
+
         viewModel.currentPost.observe(this) { currentPost ->
             with(binding.contentEditText) {
                 val content = currentPost?.content

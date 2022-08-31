@@ -14,12 +14,20 @@
         android:theme="@style/Theme.NMedia"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name="ru.netology.nmedia.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.SecondEntryPointActivity"
+            android:label="Вторая точка входа"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
     </application>

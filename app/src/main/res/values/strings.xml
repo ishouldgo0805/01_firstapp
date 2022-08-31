@@ -5,6 +5,8 @@
     <string name="remove">Remove</string>
     <string name="post_text">Post Text</string>
     <string name="menu_edit">Edit</string>
+    <string name="chooser_share_post">Share post</string>
+    <string name="chooser_open_video">Open Video</string>
 
 
 </resources>
