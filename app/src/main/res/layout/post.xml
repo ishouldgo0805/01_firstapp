@@ -53,7 +53,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:hint="@string/menu_edit"
+        android:hint="@string/edit"
         android:importantForAutofill="no"
         android:text=""
         app:layout_constraintBottom_toTopOf="@+id/contentEditText"
