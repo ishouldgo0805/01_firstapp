@@ -53,7 +53,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:hint="@string/menu_edit"
+        android:hint="@string/edit"
         android:importantForAutofill="no"
         android:text=""
         app:layout_constraintBottom_toTopOf="@+id/contentEditText"
@@ -84,6 +84,24 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         app:constraint_referenced_ids="contentEditText,saveButton" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_add_24dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_constraintBottom_toTopOf="@+id/fab"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_edit_24dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

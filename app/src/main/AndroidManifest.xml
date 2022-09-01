@@ -24,12 +24,16 @@
         </activity>
         <activity
             android:name=".activities.SecondEntryPointActivity"
-            android:label="Вторая точка входа"
-            android:exported="true">
+            android:exported="true"
+            android:label="Вторая точка входа">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activities.NewPostActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

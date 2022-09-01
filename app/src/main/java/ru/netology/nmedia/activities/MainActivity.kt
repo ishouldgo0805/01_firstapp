@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import ru.netology.nmedia.R
@@ -41,6 +42,17 @@ class MainActivity : AppCompatActivity() {
                 Intent.createChooser(intent, getString(R.string.chooser_share_post))
             startActivity(shareIntent)
         }
+
+        val activityLauncher = registerForActivityResult(
+            NewPostActivity.ResultContract
+        ) { postContent: String? ->
+            postContent?.let { viewModel::onSaveButtonClicked }
+        }
+
+        binding.fab.setOnClickListener {
+            activityLauncher.launch(Unit)
+        }
+
 
         viewModel.videoPostEvent.observe(this) { postVideoContent ->
             val intent = Intent().apply {

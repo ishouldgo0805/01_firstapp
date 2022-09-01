@@ -61,7 +61,7 @@ class PostViewModel : ViewModel(), PostInteractionListener {
     }
 
     override fun onPlayVideoEvent(post: Post) {
-        videoPostEvent.value = post.video
+        videoPostEvent.value = post.video ?: return
     }
 
 }
