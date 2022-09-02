@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
+import ru.netology.nmedia.activities.NewPostActivity.Companion.POST_CONTENT_EXTRA_KEY
 import ru.netology.nmedia.databinding.ActivityNewPostBinding
 
 class NewPostActivity : AppCompatActivity() {
@@ -27,7 +28,7 @@ class NewPostActivity : AppCompatActivity() {
             setResult(Activity.RESULT_CANCELED)
         } else {
             val resultIntent = Intent()
-            resultIntent.putExtra(Intent.EXTRA_TEXT, postContent)
+            resultIntent.putExtra(POST_CONTENT_EXTRA_KEY, postContent)
             setResult(Activity.RESULT_OK, resultIntent)
         }
         finish()

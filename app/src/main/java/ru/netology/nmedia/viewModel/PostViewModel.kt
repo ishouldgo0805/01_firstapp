@@ -26,6 +26,7 @@ class PostViewModel : ViewModel(), PostInteractionListener {
 
     val videoPostEvent = SingleLiveEvent<String>()
 
+
     fun onSaveButtonClicked(content: String) {
 
         if (content.isBlank()) return
@@ -63,5 +64,6 @@ class PostViewModel : ViewModel(), PostInteractionListener {
     override fun onPlayVideoEvent(post: Post) {
         videoPostEvent.value = post.video ?: return
     }
+
 
 }

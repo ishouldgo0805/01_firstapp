@@ -24,6 +24,9 @@ class MainActivity : AppCompatActivity() {
         val binding = PostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val binding1 = ActivityEditPostBinding.inflate(layoutInflater)
+
+
         val adapter = PostsAdapter(viewModel)
 
         binding.postsRecyclerView.adapter = adapter
@@ -46,12 +49,13 @@ class MainActivity : AppCompatActivity() {
         val activityLauncher = registerForActivityResult(
             NewPostActivity.ResultContract
         ) { postContent: String? ->
-            postContent?.let { viewModel::onSaveButtonClicked }
+            postContent?.let(viewModel::onSaveButtonClicked)
         }
 
         binding.fab.setOnClickListener {
             activityLauncher.launch(Unit)
         }
+
 
 
         viewModel.videoPostEvent.observe(this) { postVideoContent ->
@@ -72,28 +76,47 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+        val editedActivityLauncher = registerForActivityResult(
+            EditPostActivity.ResultContract
+        ) { postContent: String? ->
+            postContent?.let(viewModel::onSaveButtonClicked)
+        }
+
+
         viewModel.currentPost.observe(this) { currentPost ->
-            with(binding.contentEditText) {
+            with(binding1.editPost) {
+                editedActivityLauncher.launch(String.toString())
                 val content = currentPost?.content
                 setText(content)
-                binding.group.visibility = View.VISIBLE
-                binding.cancelSaveButton.setOnClickListener {
-                    binding.cancelGroup.visibility = View.GONE
-                    binding.group.visibility = View.GONE
-                    hideKeyboard()
-                }
-                binding.cancelGroup.visibility = View.GONE
-                    if (content != null) {
-                        binding.cancelGroup.visibility = View.VISIBLE
-                        requestFocus()
-                        showKeyboard()
-
-                    } else {
-                        clearFocus()
-                        hideKeyboard()
-                    }
-
-                }
             }
+
+
+//            viewModel.currentPost.observe(this) { currentPost ->
+//                with(binding.contentEditText) {
+//                    val content = currentPost?.content
+//                    setText(content)
+//                    binding.group.visibility = View.VISIBLE
+//                    binding.cancelSaveButton.setOnClickListener {
+//                        binding.cancelGroup.visibility = View.GONE
+//                        binding.group.visibility = View.GONE
+//                        hideKeyboard()
+//                    }
+//                    binding.cancelGroup.visibility = View.GONE
+//                    if (content != null) {
+//                        binding.cancelGroup.visibility = View.VISIBLE
+//                        requestFocus()
+//                        showKeyboard()
+//
+//                    } else {
+//                        clearFocus()
+//                        hideKeyboard()
+//                    }
+//
+//                }
+//            }
         }
     }
+}
+
+

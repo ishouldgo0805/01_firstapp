@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.Post
 import ru.netology.nmedia.R
+import ru.netology.nmedia.activities.EditPostActivity
 import ru.netology.nmedia.databinding.MinipostBinding
 import ru.netology.nmedia.databinding.PostBinding
 
