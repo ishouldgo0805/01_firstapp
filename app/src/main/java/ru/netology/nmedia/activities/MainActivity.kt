@@ -4,9 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import ru.netology.nmedia.Post
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.*
@@ -23,8 +25,6 @@ class MainActivity : AppCompatActivity() {
 
         val binding = PostBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val binding1 = ActivityEditPostBinding.inflate(layoutInflater)
 
 
         val adapter = PostsAdapter(viewModel)
@@ -46,18 +46,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(shareIntent)
         }
 
-        val activityLauncher = registerForActivityResult(
-            NewPostActivity.ResultContract
-        ) { postContent: String? ->
-            postContent?.let(viewModel::onSaveButtonClicked)
-        }
-
-        binding.fab.setOnClickListener {
-            activityLauncher.launch(Unit)
-        }
-
-
-
         viewModel.videoPostEvent.observe(this) { postVideoContent ->
             val intent = Intent().apply {
                 action = Intent.ACTION_VIEW
@@ -77,46 +65,56 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        val editedActivityLauncher = registerForActivityResult(
+        val activityLauncher = registerForActivityResult(
+            NewPostActivity.ResultContract
+        ) { postContent: String? ->
+            postContent?.let(viewModel::onSaveButtonClicked)
+        }
+
+        binding.fab.setOnClickListener {
+            activityLauncher.launch(Unit)
+        }
+
+
+        val editActivityLauncher = registerForActivityResult(
             EditPostActivity.ResultContract
         ) { postContent: String? ->
             postContent?.let(viewModel::onSaveButtonClicked)
         }
 
+        viewModel.editPostEvent.observe(this) {
+            editActivityLauncher.launch(it)
+        }
+
 
         viewModel.currentPost.observe(this) { currentPost ->
-            with(binding1.editPost) {
-                editedActivityLauncher.launch(String.toString())
+            with(binding.contentEditText) {
                 val content = currentPost?.content
                 setText(content)
+                binding.group.visibility = View.VISIBLE
+                binding.cancelSaveButton.setOnClickListener {
+                    binding.cancelGroup.visibility = View.GONE
+                    binding.group.visibility = View.GONE
+                    hideKeyboard()
+                }
+                binding.cancelGroup.visibility = View.GONE
+                if (content != null) {
+                    binding.cancelGroup.visibility = View.VISIBLE
+
+                    requestFocus()
+                    showKeyboard()
+
+                } else {
+                    clearFocus()
+                    hideKeyboard()
+                }
+
             }
-
-
-//            viewModel.currentPost.observe(this) { currentPost ->
-//                with(binding.contentEditText) {
-//                    val content = currentPost?.content
-//                    setText(content)
-//                    binding.group.visibility = View.VISIBLE
-//                    binding.cancelSaveButton.setOnClickListener {
-//                        binding.cancelGroup.visibility = View.GONE
-//                        binding.group.visibility = View.GONE
-//                        hideKeyboard()
-//                    }
-//                    binding.cancelGroup.visibility = View.GONE
-//                    if (content != null) {
-//                        binding.cancelGroup.visibility = View.VISIBLE
-//                        requestFocus()
-//                        showKeyboard()
-//
-//                    } else {
-//                        clearFocus()
-//                        hideKeyboard()
-//                    }
-//
-//                }
-//            }
         }
     }
 }
+
+
+
 
 

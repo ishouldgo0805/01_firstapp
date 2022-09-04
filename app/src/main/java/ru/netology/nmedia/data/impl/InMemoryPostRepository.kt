@@ -18,7 +18,7 @@ class InMemoryPostRepository : PostRepository {
                 content = "Events $index",
                 published = "06.08.2022",
                 likedByMe = false,
-                video = "https://yandex.ru/search/?text=how+to+set+image+at+image+view+adnroid&clid=2411726&lr=213"
+                video = "https://www.youtube.com/"
             )
         }
     )

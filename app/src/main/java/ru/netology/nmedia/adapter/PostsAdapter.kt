@@ -1,8 +1,10 @@
 package ru.netology.nmedia.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +23,7 @@ internal class PostsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = MinipostBinding.inflate(inflater, parent, false)
-        return ViewHolder(binding,interactionListener)
+        return ViewHolder(binding, interactionListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -33,7 +35,6 @@ internal class PostsAdapter(
         private val binding: MinipostBinding,
         listener: PostInteractionListener
     ) : RecyclerView.ViewHolder(binding.root) {
-
 
         private lateinit var post: Post
 
@@ -69,6 +70,8 @@ internal class PostsAdapter(
             binding.video.setOnClickListener {
                 listener.onPlayVideoEvent(post)
             }
+
+
         }
 
 
@@ -85,6 +88,7 @@ internal class PostsAdapter(
             }
         }
     }
+
 
     private fun checkForK(a: Int): String {
         if (a > 999_999) {
@@ -105,4 +109,6 @@ internal class PostsAdapter(
         override fun areContentsTheSame(oldItem: Post, newItem: Post) =
             oldItem == newItem
     }
+
+
 }

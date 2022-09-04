@@ -26,6 +26,8 @@ class PostViewModel : ViewModel(), PostInteractionListener {
 
     val videoPostEvent = SingleLiveEvent<String>()
 
+    val editPostEvent = SingleLiveEvent<String>()
+
 
     fun onSaveButtonClicked(content: String) {
 
@@ -37,7 +39,7 @@ class PostViewModel : ViewModel(), PostInteractionListener {
         ) ?: Post(
             id = PostRepository.NEW_POST_ID,
             author = "Me",
-            content= content,
+            content = content,
             published = "Today",
             video = "https://www.youtube.com/watch?v=iO8FMBWKO3Y"
         )
@@ -59,6 +61,7 @@ class PostViewModel : ViewModel(), PostInteractionListener {
 
     override fun onEditCLicked(post: Post) {
         currentPost.value = post
+        editPostEvent.value = post.content
     }
 
     override fun onPlayVideoEvent(post: Post) {
