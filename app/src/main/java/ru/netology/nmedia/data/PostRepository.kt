@@ -5,8 +5,6 @@ import ru.netology.nmedia.Post
 
 interface PostRepository {
 
-    val data: LiveData<List<Post>>
-    
     fun likes(postId: Long)
 
     fun shareCounter(postId: Long)
@@ -14,6 +12,8 @@ interface PostRepository {
     fun removeById(postId: Long)
 
     fun save(post: Post)
+
+    fun getAll(): LiveData<List<Post>>
 
     companion object {
         const val NEW_POST_ID = 0L

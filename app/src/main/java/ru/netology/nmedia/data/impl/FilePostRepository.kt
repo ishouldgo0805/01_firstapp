@@ -12,8 +12,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlin.properties.Delegates
 
-class InMemoryPostRepository(
-    context: Context
+class FilePostRepository(
+    private val context: Context
 ) : PostRepository {
     private var posts = emptyList<Post>()
     private val data = MutableLiveData(posts)
@@ -25,7 +25,31 @@ class InMemoryPostRepository(
 
     override fun getAll(): LiveData<List<Post>> = data
 
+    init {
+        prefs.getString(POSTS_PREFS_KEY, null)?.let {
+            posts = gson.fromJson(it, type)
+            data.value = posts
+        }
+    }
 
+    init {
+        val file = context.filesDir.resolve(FILE_NAME)
+        if (file.exists()) {
+            context.openFileInput(FILE_NAME).bufferedReader().use {
+                posts = gson.fromJson(it, type)
+                data.value = posts
+            }
+        } else {
+            sync()
+        }
+    }
+
+
+    private fun sync() {
+        context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE).bufferedWriter().use {
+            it.write(gson.toJson(posts))
+        }
+    }
 
 
     override fun likes(postId: Long) {
@@ -40,6 +64,7 @@ class InMemoryPostRepository(
         }
         posts.map { }
         data.value = posts
+        sync()
     }
 
     override fun shareCounter(postId: Long) {
@@ -54,11 +79,13 @@ class InMemoryPostRepository(
     override fun removeById(postId: Long) {
         posts = posts.filter { post -> post.id != postId }
         data.value = posts
+        sync()
     }
 
     override fun save(post: Post) {
         if (post.id == PostRepository.NEW_POST_ID) insert(post) else update(post)
         data.value = posts
+        sync()
     }
 
 
@@ -67,6 +94,7 @@ class InMemoryPostRepository(
             post.copy(id = ++nextId)
         ) + posts
         data.value = posts
+        sync()
     }
 
     private fun update(post: Post) {
@@ -74,11 +102,13 @@ class InMemoryPostRepository(
             if (it.id == post.id) post else it
         }
         data.value = posts
+        sync()
     }
 
     private companion object {
         const val POSTS_PREFS_KEY = "posts"
         const val NEXT_ID_PREFS_KEY = "posts"
-
+        const val FILE_NAME = "posts.json"
     }
+
 }

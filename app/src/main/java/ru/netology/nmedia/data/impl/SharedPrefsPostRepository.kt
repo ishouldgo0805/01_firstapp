@@ -12,7 +12,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlin.properties.Delegates
 
-class InMemoryPostRepository(
+class SharedPrefsPostRepository(
     context: Context
 ) : PostRepository {
     private var posts = emptyList<Post>()
@@ -25,7 +25,20 @@ class InMemoryPostRepository(
 
     override fun getAll(): LiveData<List<Post>> = data
 
+    init {
+        prefs.getString(POSTS_PREFS_KEY, null)?.let {
+            posts = gson.fromJson(it, type)
+            data.value = posts
+        }
+    }
 
+
+    private fun sync() {
+        with(prefs.edit()) {
+            putString(POSTS_PREFS_KEY, gson.toJson(posts))
+            apply()
+        }
+    }
 
 
     override fun likes(postId: Long) {
@@ -40,6 +53,7 @@ class InMemoryPostRepository(
         }
         posts.map { }
         data.value = posts
+        sync()
     }
 
     override fun shareCounter(postId: Long) {
@@ -54,11 +68,13 @@ class InMemoryPostRepository(
     override fun removeById(postId: Long) {
         posts = posts.filter { post -> post.id != postId }
         data.value = posts
+        sync()
     }
 
     override fun save(post: Post) {
         if (post.id == PostRepository.NEW_POST_ID) insert(post) else update(post)
         data.value = posts
+        sync()
     }
 
 
@@ -67,6 +83,7 @@ class InMemoryPostRepository(
             post.copy(id = ++nextId)
         ) + posts
         data.value = posts
+        sync()
     }
 
     private fun update(post: Post) {
@@ -74,6 +91,7 @@ class InMemoryPostRepository(
             if (it.id == post.id) post else it
         }
         data.value = posts
+        sync()
     }
 
     private companion object {
@@ -81,4 +99,5 @@ class InMemoryPostRepository(
         const val NEXT_ID_PREFS_KEY = "posts"
 
     }
+
 }
