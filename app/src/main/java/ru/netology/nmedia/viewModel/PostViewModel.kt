@@ -25,6 +25,12 @@ class PostViewModel(application: Application) : AndroidViewModel(application), P
 
     val editPostEvent = SingleLiveEvent<String>()
 
+    val navigateToPostContentScreenEvent = SingleLiveEvent<String>()
+
+    fun addPostClicked() {
+        navigateToPostContentScreenEvent.call()
+    }
+
 
     fun onSaveButtonClicked(content: String) {
 

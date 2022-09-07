@@ -1,18 +1,14 @@
 package ru.netology.nmedia.adapter
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.Post
 import ru.netology.nmedia.R
-import ru.netology.nmedia.activities.EditPostActivity
 import ru.netology.nmedia.databinding.MinipostBinding
-import ru.netology.nmedia.databinding.PostBinding
 
 
 internal class PostsAdapter(

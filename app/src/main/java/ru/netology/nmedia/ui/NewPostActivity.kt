@@ -1,4 +1,4 @@
-package ru.netology.nmedia.activities
+package ru.netology.nmedia.ui
 
 import android.app.Activity
 import android.content.Context
@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
-import ru.netology.nmedia.activities.NewPostActivity.Companion.POST_CONTENT_EXTRA_KEY
 import ru.netology.nmedia.databinding.ActivityNewPostBinding
 
 class NewPostActivity : AppCompatActivity() {

@@ -6,4 +6,4 @@
     android:text="Hello World!"
     android:gravity="center"
     android:textSize="24sp"
-    tools:context=".activities.SecondEntryPointActivity" />
+    tools:context=".ui.SecondEntryPointActivity" />

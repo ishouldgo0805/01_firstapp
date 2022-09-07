@@ -1,11 +1,10 @@
-package ru.netology.nmedia.activities
+package ru.netology.nmedia.ui
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import ru.netology.nmedia.databinding.ActivityEditPostBinding
 
