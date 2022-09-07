@@ -65,6 +65,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application), P
     override fun onEditCLicked(post: Post) {
         currentPost.value = post
         editPostEvent.value = post.content
+        navigateToPostContentScreenEvent.value = post.content
     }
 
     override fun onPlayVideoEvent(post: Post) {

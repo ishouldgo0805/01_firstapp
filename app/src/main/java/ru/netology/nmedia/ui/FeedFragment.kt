@@ -6,8 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.*
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.PostBinding
@@ -54,14 +53,20 @@ class FeedFragment : Fragment() {
             editActivityLauncher.launch(it)
         }
 
-        val activityLauncher = registerForActivityResult(
-            NewPostActivity.ResultContract
-        ) { postContent: String? ->
-            postContent?.let(viewModel::onSaveButtonClicked)
+        setFragmentResultListener(
+            requestKey = NewPostFragment.REQUEST_KEY
+        ) { requestKey, bundle ->  
+            if (requestKey != NewPostFragment.REQUEST_KEY) return@setFragmentResultListener
+            val newPostContent = bundle.getString(NewPostFragment.REQUEST_KEY) ?: return@setFragmentResultListener
+            viewModel.onSaveButtonClicked(newPostContent)
         }
 
-        viewModel.navigateToPostContentScreenEvent.observe(this) {
-            activityLauncher.launch(Unit)
+        viewModel.navigateToPostContentScreenEvent.observe(this) { initialContent ->
+            parentFragmentManager.commit {
+                val fragment = NewPostFragment(initialContent)
+                replace(R.id.fragmentContainer, fragment)
+                addToBackStack(null)
+            }
         }
 
     }
