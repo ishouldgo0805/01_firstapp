@@ -3,67 +3,72 @@ package ru.netology.nmedia.viewModel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import ru.netology.nmedia.Post
 import ru.netology.nmedia.adapter.PostInteractionListener
 import ru.netology.nmedia.data.PostRepository
 import ru.netology.nmedia.data.impl.FilePostRepository
-import ru.netology.nmedia.data.impl.SharedPrefsPostRepository
+import ru.netology.nmedia.dto.EditPostResult
+import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.util.SingleLiveEvent
 
-class PostViewModel(application: Application) : AndroidViewModel(application), PostInteractionListener {
+class PostViewModel(application: Application) : AndroidViewModel(application),
+    PostInteractionListener {
 
-    private val repository: PostRepository = FilePostRepository(application)
+    private val repository: PostRepository =
+        FilePostRepository(application)
 
-    val data = repository.getAll()
+    val data by repository::data
 
-    val currentPost = MutableLiveData<Post?>(null)
+    private val currentPost = MutableLiveData<Post?>(null)
 
     val shareEvent = SingleLiveEvent<String>()
 
-    val videoPostEvent = SingleLiveEvent<String>()
+    val navigateToPostContentScreenEvent = SingleLiveEvent<EditPostResult?>()
 
-    val editPostEvent = SingleLiveEvent<String>()
+    val navigateToPostFragmentEvent = SingleLiveEvent<Long>()
 
+    val navigateToVideo = SingleLiveEvent<String?>()
 
-    fun onSaveButtonClicked(content: String) {
-
+    fun onSaveButtonClicked(content: String, video: String?) {
         if (content.isBlank()) return
-
-
         val post = currentPost.value?.copy(
-            content = content
+            postText = content,
+            video = video
         ) ?: Post(
             id = PostRepository.NEW_POST_ID,
-            author = "Me",
-            content = content,
-            published = "Today",
-            video = "https://www.youtube.com/watch?v=iO8FMBWKO3Y"
+            postText = content,
+            postData = "Сегодня",
+            postName = "Andrey",
+            video = video
         )
-        repository.save(post)
+        repository.savePost(post)
         currentPost.value = null
+    }
 
+    fun addPostClicked() {
+        navigateToPostContentScreenEvent.call()
     }
 
     override fun onLikeClicked(post: Post) =
-        repository.likes(post.id)
+        repository.like(post.id)
 
     override fun onShareClicked(post: Post) {
-        repository.shareCounter(post.id)
-        shareEvent.value = post.content
+        repository.share(post.id)
+        shareEvent.value = post.postText
     }
 
-    override fun onRemoveClicked(post: Post) =
-        repository.removeById(post.id)
+    override fun onDeleteClicked(post: Post) =
+        repository.deletePost(post.id)
 
-    override fun onEditCLicked(post: Post) {
+    override fun onEditClicked(post: Post) {
         currentPost.value = post
-        editPostEvent.value = post.content
+        navigateToPostContentScreenEvent.value = EditPostResult(post.postText, post.video)
     }
 
-    override fun onPlayVideoEvent(post: Post) {
-        videoPostEvent.value = post.video ?: return
+    override fun onVideoClicked(post: Post) {
+        navigateToVideo.value = post.video
     }
 
-
+    override fun onPostClicked(post: Post) {
+        navigateToPostFragmentEvent.value = post.id
+    }
 }

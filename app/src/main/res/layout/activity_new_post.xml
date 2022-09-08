@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.NewPostActivity">
+    tools:context=".ui.PostContentFragment">
 
     <EditText
         android:id="@+id/edit"
@@ -27,7 +27,7 @@
         android:id="@+id/ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_ok_24dp"
+        app:srcCompat="@drawable/ic_ok"
         app:layout_anchor="@id/bottomAppBar"
         />
 
