@@ -10,7 +10,7 @@ import androidx.navigation.fragment.navArgs
 import ru.netology.nmedia.databinding.NewPostFragmentBinding
 import ru.netology.nmedia.util.focusAndShowKeyboard
 
-class NewPostFragment : Fragment() {
+class PostContentFragment : Fragment() {
 
     private val args by navArgs<NewPostFragmentArgs>()
 

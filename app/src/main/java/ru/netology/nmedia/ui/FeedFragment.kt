@@ -1,132 +1,79 @@
 package ru.netology.nmedia.ui
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.*
-import ru.netology.nmedia.R
-import ru.netology.nmedia.adapter.PostsAdapter
-import ru.netology.nmedia.databinding.PostBinding
-import ru.netology.nmedia.util.hideKeyboard
-import ru.netology.nmedia.util.showKeyboard
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import ru.netology.nmedia.adapter.PostAdapter
+import ru.netology.nmedia.databinding.FeedFragmentBinding
 import ru.netology.nmedia.viewModel.PostViewModel
 
 class FeedFragment : Fragment() {
 
-    private val viewModel: PostViewModel by viewModels()
+    private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.shareEvent.observe(this) { postContent ->
+        viewModel.shareEvent.observe(this) { post ->
             val intent = Intent().apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, postContent)
                 type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, post)
             }
-            val shareIntent =
-                Intent.createChooser(intent, getString(R.string.chooser_share_post))
+            val shareIntent = Intent.createChooser(intent, "Поделиться: ")
             startActivity(shareIntent)
-        }
-
-        viewModel.videoPostEvent.observe(this) { postVideoContent ->
-            val intent = Intent().apply {
-                action = Intent.ACTION_VIEW
-                data = Uri.parse(postVideoContent)
-                putExtra(Intent.ACTION_VIEW, data)
-            }
-            val videoIntent =
-                Intent.createChooser(intent, getString(R.string.chooser_open_video))
-            startActivity(videoIntent)
-        }
-
-        val editActivityLauncher = registerForActivityResult(
-            EditPostActivity.ResultContract
-        ) { postContent: String? ->
-            postContent?.let(viewModel::onSaveButtonClicked)
-        }
-
-        viewModel.editPostEvent.observe(this) {
-            editActivityLauncher.launch(it)
         }
 
         setFragmentResultListener(
             requestKey = NewPostFragment.REQUEST_KEY
-        ) { requestKey, bundle ->  
+        ) { requestKey, bundle ->
             if (requestKey != NewPostFragment.REQUEST_KEY) return@setFragmentResultListener
-            val newPostContent = bundle.getString(NewPostFragment.REQUEST_KEY) ?: return@setFragmentResultListener
-            viewModel.onSaveButtonClicked(newPostContent)
-        }
 
-        viewModel.navigateToPostContentScreenEvent.observe(this) { initialContent ->
-            parentFragmentManager.commit {
-                val fragment = NewPostFragment(initialContent)
-                replace(R.id.fragmentContainer, fragment)
-                addToBackStack(null)
-            }
+            val newPostContent = bundle.getString(
+                NewPostFragment.POST_CONTENT_EXTRA_KEY
+            ) ?: return@setFragmentResultListener
+            val newPostVideo = bundle.getString(
+                NewPostFragment.POST_VIDEO_EXTRA_KEY
+            ) ?: return@setFragmentResultListener
+            viewModel.onSaveButtonClicked(newPostContent, newPostVideo)
         }
-
+        viewModel.navigateToPostContentScreenEvent.observe(this) { initial ->
+            val direction = FeedFragmentDirections.actionFeedFragmentToNewPostFragment(
+                initial?.newContent,
+                initial?.newVideo
+            )
+            findNavController().navigate(direction)
+        }
+        viewModel.navigateToPostFragmentEvent.observe(this) { postId ->
+            val direction = FeedFragmentDirections.actionFeedFragmentToPostFragment(postId.toInt())
+            findNavController().navigate(direction)
+        }
+        viewModel.navigateToPostContentScreenEvent.observe(this) { editPost ->
+            val direction = FeedFragmentDirections.actionFeedFragmentToNewPostFragment(
+                editPost?.newContent,
+                editPost?.newVideo
+            )
+            findNavController().navigate(direction)
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) = PostBinding.inflate(layoutInflater, container, false).also { binding ->
-
-        val adapter = PostsAdapter(viewModel)
-
+    ) = FeedFragmentBinding.inflate(layoutInflater, container, false).also { binding ->
+        val adapter = PostAdapter(viewModel)
         binding.postsRecyclerView.adapter = adapter
-
         viewModel.data.observe(viewLifecycleOwner) { posts ->
             adapter.submitList(posts)
-
-
-            binding.saveButton.setOnClickListener {
-                with(binding.contentEditText) {
-                    val content = text.toString()
-                    viewModel.onSaveButtonClicked(content)
-                }
-            }
-
-            binding.fab.setOnClickListener {
-                viewModel.addPostClicked()
-            }
-
-            viewModel.currentPost.observe(viewLifecycleOwner) { currentPost ->
-                with(binding.contentEditText) {
-                    val content = currentPost?.content
-                    setText(content)
-                    binding.group.visibility = View.VISIBLE
-                    binding.cancelSaveButton.setOnClickListener {
-                        binding.cancelGroup.visibility = View.GONE
-                        binding.group.visibility = View.GONE
-                        hideKeyboard()
-                    }
-                    binding.cancelGroup.visibility = View.GONE
-                    if (content != null) {
-                        binding.cancelGroup.visibility = View.VISIBLE
-
-                        requestFocus()
-                        showKeyboard()
-
-                    } else {
-                        clearFocus()
-                        hideKeyboard()
-                    }
-
-                }
-            }
-
+        }
+        binding.addButton.setOnClickListener {
+            viewModel.addPostClicked()
         }
     }.root
-
 }
-
-
-
-
-

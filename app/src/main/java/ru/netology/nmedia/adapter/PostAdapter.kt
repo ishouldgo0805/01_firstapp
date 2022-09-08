@@ -1,24 +1,27 @@
 package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.netology.nmedia.Post
 import ru.netology.nmedia.R
-import ru.netology.nmedia.databinding.MinipostBinding
+import ru.netology.nmedia.databinding.PostListFragmentBinding
+import ru.netology.nmedia.dto.Post
 
-
-internal class PostsAdapter(
+class PostAdapter(
     private val interactionListener: PostInteractionListener
-) : ListAdapter<Post, PostsAdapter.ViewHolder>(DiffCallback) {
 
+) : ListAdapter<Post, PostAdapter.ViewHolder>(DiffCallBack) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = MinipostBinding.inflate(inflater, parent, false)
+        val binding = PostListFragmentBinding.inflate(
+            inflater, parent, false
+        )
         return ViewHolder(binding, interactionListener)
     }
 
@@ -27,8 +30,8 @@ internal class PostsAdapter(
         holder.bind(post)
     }
 
-    inner class ViewHolder(
-        private val binding: MinipostBinding,
+    class ViewHolder(
+        private val binding: PostListFragmentBinding,
         listener: PostInteractionListener
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -40,11 +43,11 @@ internal class PostsAdapter(
                 setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
                         R.id.remove -> {
-                            listener.onRemoveClicked(post)
+                            listener.onDeleteClicked(post)
                             true
                         }
                         R.id.edit -> {
-                            listener.onEditCLicked(post)
+                            listener.onEditClicked(post)
                             true
                         }
                         else -> false
@@ -56,55 +59,52 @@ internal class PostsAdapter(
         init {
             binding.like.setOnClickListener {
                 listener.onLikeClicked(post)
-
             }
             binding.share.setOnClickListener {
                 listener.onShareClicked(post)
             }
-            binding.options.setOnClickListener { popupMenu.show() }
-
-            binding.video.setOnClickListener {
-                listener.onPlayVideoEvent(post)
+            binding.options.setOnClickListener {
+                popupMenu.show()
             }
-
-
+            binding.video.setOnClickListener {
+                listener.onVideoClicked(post)
+            }
+            binding.buttonPlay.setOnClickListener {
+                listener.onVideoClicked(post)
+            }
+            fun Group.setAllOnClickListener(listener: View.OnClickListener?) {
+                referencedIds.forEach { id ->
+                    rootView.findViewById<View>(id).setOnClickListener(listener)
+                }
+            }
+            binding.postGroup.setAllOnClickListener {
+                listener.onPostClicked(post)
+            }
         }
-
 
         fun bind(post: Post) {
             this.post = post
 
             with(binding) {
-                authorName.text = post.author
-                text.text = post.content
-                date.text = post.published
-                like.text = checkForK(post.likes)
-                share.text = checkForK(post.shares)
+                postName.text = post.postName
+                postData.text = post.postData
+                postText.text = post.postText
+                like.text = post.likes.toString()
                 like.isChecked = post.likedByMe
+                like.setBackgroundColor(android.R.drawable.btn_default)
+                share.text = post.shares.toString()
+                share.isChecked = false
+                videoGroup.visibility =
+                    if (post.video.isNullOrBlank()) View.GONE else View.VISIBLE
             }
         }
     }
 
-
-    private fun checkForK(a: Int): String {
-        if (a > 999_999) {
-            return ((a / 100000)).toString() + "M"
-        } else if (a > 9999) {
-            return ((a / 1000)).toString() + "K"
-        } else if (a > 999) {
-            return "%.1f".format(((a.toFloat() / 1000))) + "K"
-        }
-        return a.toString()
-    }
-
-    private object DiffCallback : DiffUtil.ItemCallback<Post>() {
-
+    private object DiffCallBack : DiffUtil.ItemCallback<Post>() {
         override fun areItemsTheSame(oldItem: Post, newItem: Post) =
             oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: Post, newItem: Post) =
             oldItem == newItem
     }
-
-
 }
