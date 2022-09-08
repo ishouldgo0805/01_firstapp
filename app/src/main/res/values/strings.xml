@@ -8,19 +8,19 @@
     <string name="chooser_share_post">Share post</string>
     <string name="chooser_open_video">Open Video</string>
     <string name="edit">Edit</string>
-    <string name="button_ok">button_ok</string>
-    <string name="edit_text">edit_text</string>
-    <string name="video_url">video_url</string>
-    <string name="avatar_post">avatar_post</string>
-    <string name="post_name" />
-    <string name="post_data" />
-    <string name="options" />
-    <string name="like" />
-    <string name="share" />
-    <string name="viewing" />
-    <string name="count_viewing" />
-    <string name="video" />
-    <string name="enable_video" />
+    <string name="button_ok" translatable="false">button_ok</string>
+    <string name="edit_text" translatable="false">edit_text</string>
+    <string name="video_url" translatable="false">video_url</string>
+    <string name="avatar_post" translatable="false">avatar_post</string>
+    <string name="post_name" translatable="false" />
+    <string name="post_data" translatable="false" />
+    <string name="options" translatable="false" />
+    <string name="like" translatable="false" />
+    <string name="share" translatable="false" />
+    <string name="viewing" translatable="false" />
+    <string name="count_viewing" translatable="false" />
+    <string name="video" translatable="false" />
+    <string name="enable_video" translatable="false" />
 
 
 </resources>
